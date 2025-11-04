@@ -1,0 +1,29 @@
+{
+  "language": "fr",
+  "warn": "Attention",
+  "error": "Erreur",
+  "success": "Succès",
+  "onboarding": {
+    "selectLanguage": "Choisissez votre langue",
+    "welcome": "Bienvenue à MADERASATI",
+    "followUrChildren": "Ensemble, demandons le savoir et la connaissance, avec confiance et sécurité.",
+    "description": "Une plateforme complète pour rester connecté avec l'école et suivre la progression de votre enfant",
+    "ar": "Arabic",
+    "fr": "Francais",
+    "continue": "Continuer"
+  },
+  "login": {
+    "welcome": "Bon retour",
+    "signInToContinue": "Connectez-vous pour continuer",
+    "title": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié?",
+    "signIn": "Se connecter",
+    "dontHaveAccount": "Vous n'avez pas de compte?",
+    "signUp": "S'inscrire",
+    "fillAllFields": "Veuillez remplir tous les champs",
+    "invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect",
+    "successMessage": "Vous vous êtes connecté avec succès, {name}!"
+  }
+}
