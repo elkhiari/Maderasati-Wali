@@ -22,6 +22,11 @@ interface AdminLoginResponse {
   data: LoginResponse;
 }
 
+interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     mobileLogin: builder.mutation<LoginResponse, LoginRequest>({
@@ -31,6 +36,13 @@ export const userApi = apiSlice.injectEndpoints({
         body: credentials,
       }),
       transformResponse: (response: AdminLoginResponse) => response.data,
+    }),
+    changePassword: builder.mutation<void, ChangePasswordRequest>({
+      query: (passwords) => ({
+        url: "/api/parent/change-password",
+        method: "POST",
+        body: passwords,
+      }),
     }),
   }),
 });

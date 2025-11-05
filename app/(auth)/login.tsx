@@ -2,7 +2,6 @@ import Text from "@/components/Cext";
 import { useMobileLoginMutation } from "@/features/api/auth";
 import useAuth from "@/hooks/useAuth";
 import { Image } from "expo-image";
-import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { CircleAlert, Eye, EyeOff, Lock, User } from "lucide-react-native";
 import { useState } from "react";
@@ -10,16 +9,20 @@ import { useTranslation } from "react-i18next";
 
 import {
   ActivityIndicator,
+  Platform,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function Login() {
   const [login, { isLoading }] = useMobileLoginMutation();
-  const { handleIsAuthenticated } = useAuth();
+  const { handleIsAuthenticated, hasOnboarded, getCredentials, user } =
+    useAuth();
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
@@ -50,7 +53,7 @@ export default function Login() {
         username,
         password,
       }).unwrap();
-      handleIsAuthenticated(response);
+      handleIsAuthenticated(response, { username, password });
     } catch (error) {
       showMessage({
         message: t("error"),
@@ -69,105 +72,112 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={require("@/assets/images/onBoarding.webp")}
-          style={styles.image}
-        />
-        <View style={styles.overlay}>
+    <KeyboardAwareScrollView
+      bottomOffset={62}
+      contentContainerStyle={styles.container}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        <View style={styles.header}>
           <Image
-            source={require("@/assets/images/logo.webp")}
-            style={styles.logo}
+            source={require("@/assets/images/onBoarding.webp")}
+            style={styles.image}
           />
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.welcomeHeader}>{t("login.welcome")}</Text>
-            <Text style={styles.subtitle}>{t("login.signInToContinue")}</Text>
+          <View style={styles.overlay}>
+            <Image
+              source={require("@/assets/images/logo.webp")}
+              style={styles.logo}
+            />
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.welcomeHeader}>{t("login.welcome")}</Text>
+              <Text style={styles.subtitle}>{t("login.signInToContinue")}</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.contentContainer}>
-        <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>{t("login.title")}</Text>
+        <View style={styles.contentContainer}>
+          <View style={styles.formContainer}>
+            <Text style={styles.formTitle}>{t("login.title")}</Text>
 
-          {/* Username Input */}
-          <View style={styles.inputContainer}>
-            <View style={styles.inputWrapper}>
-              <User size={20} color="#7A3588" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder={t("login.username")}
-                placeholderTextColor="#95a5a6"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-                editable={!isLoading}
-              />
+            {/* Username Input */}
+            <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <User size={20} color="#7A3588" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("login.username")}
+                  placeholderTextColor="#95a5a6"
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                  editable={!isLoading}
+                />
+              </View>
             </View>
-          </View>
 
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <View style={styles.inputWrapper}>
-              <Lock size={20} color="#7A3588" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder={t("login.password")}
-                placeholderTextColor="#95a5a6"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-                editable={!isLoading}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeIcon}
-              >
-                {showPassword ? (
-                  <EyeOff size={20} color="#95a5a6" />
-                ) : (
-                  <Eye size={20} color="#95a5a6" />
-                )}
-              </TouchableOpacity>
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <Lock size={20} color="#7A3588" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("login.password")}
+                  placeholderTextColor="#95a5a6"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  editable={!isLoading}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} color="#95a5a6" />
+                  ) : (
+                    <Eye size={20} color="#95a5a6" />
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
 
-          {/* Forgot Password */}
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>
-              {t("login.forgotPassword")}
-            </Text>
-          </TouchableOpacity>
+            {/* Forgot Password */}
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>
+                {t("login.forgotPassword")}
+              </Text>
+            </TouchableOpacity>
 
-          {/* Login Button */}
-          <TouchableOpacity
-            style={[
-              styles.loginButton,
-              isLoading && styles.loginButtonDisabled,
-            ]}
-            onPress={handleLogin}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.loginButtonText}>{t("login.signIn")}</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Sign Up Link */}
-          <View style={styles.signUpContainer}>
-            <Text style={styles.signUpText}>{t("login.dontHaveAccount")} </Text>
-            <TouchableOpacity onPress={() => router.push("/(auth)")}>
-              <Text style={styles.signUpLink}>{t("login.signUp")}</Text>
+            {/* Login Button */}
+            <TouchableOpacity
+              style={[
+                styles.loginButton,
+                isLoading && styles.loginButtonDisabled,
+              ]}
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.loginButtonText}>{t("login.signIn")}</Text>
+              )}
             </TouchableOpacity>
           </View>
+          <View style={styles.versionContainer}>
+            <Text style={styles.versionText}>
+              Version {process.env.EXPO_PUBLIC_VERSION}
+            </Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
       <StatusBar style="light" />
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -175,11 +185,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#7A3588",
     flex: 1,
-    justifyContent: "space-between",
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   header: {
     position: "relative",
-    height: "45%",
+    height: 400,
   },
   image: {
     width: "100%",
@@ -208,7 +220,7 @@ const styles = StyleSheet.create({
   },
   welcomeHeader: {
     fontSize: 24,
-    fontWeight: "700",
+    fontWeight: Platform.select({ ios: "700", android: "600" }),
     color: "#FFFFFF",
     marginBottom: 8,
     textAlign: "center",
@@ -224,6 +236,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 32,
+    marginTop: -30,
+    paddingBottom: 40,
   },
   formContainer: {
     flex: 1,
@@ -232,7 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#2c3e50",
     marginBottom: 32,
-    fontWeight: "700",
+    fontWeight: Platform.select({ ios: "700", android: "600" }),
     textAlign: "center",
   },
   inputContainer: {
@@ -294,19 +308,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "600",
   },
-  signUpContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+  versionContainer: {
     alignItems: "center",
-    marginTop: 12,
+    marginVertical: 10,
   },
-  signUpText: {
-    color: "#7f8c8d",
-    fontSize: 15,
-  },
-  signUpLink: {
-    color: "#7A3588",
-    fontSize: 15,
-    fontWeight: "600",
+  versionText: {
+    fontSize: 12,
+    color: "#95a5a6",
   },
 });

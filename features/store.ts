@@ -26,13 +26,7 @@ try {
 const userPersistConfig = {
   key: "user",
   storage: AsyncStorage,
-  whitelist: [
-    "user",
-    "token",
-    "isAuthenticated",
-    "sessionExpiration",
-    "hasOnboarded",
-  ],
+  whitelist: ["user", "hasOnboarded"],
 };
 
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);

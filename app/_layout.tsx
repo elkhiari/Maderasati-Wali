@@ -13,6 +13,7 @@ import store from "@/features/store";
 import useAuth from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { Provider } from "react-redux";
 
 export const unstable_settings = {
@@ -57,23 +58,27 @@ export default function RootLayoutWrapper() {
 
   const colorScheme = useColorScheme();
   return (
-    <Provider store={store}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <FlashMessage
-          position="top"
-          titleStyle={{
-            fontFamily: "MadaniArabic-SemiBold",
-            fontSize: 20,
-            textAlign: locale == "ar" ? "right" : "left",
-          }}
-          textStyle={{
-            fontFamily: "MadaniArabic-Regular",
-            textAlign: locale == "ar" ? "right" : "left",
-          }}
-        />
-        <RootLayout />
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </Provider>
+    <KeyboardProvider>
+      <Provider store={store}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <FlashMessage
+            position="top"
+            titleStyle={{
+              fontFamily: "MadaniArabic-SemiBold",
+              fontSize: 20,
+              textAlign: locale == "ar" ? "right" : "left",
+            }}
+            textStyle={{
+              fontFamily: "MadaniArabic-Regular",
+              textAlign: locale == "ar" ? "right" : "left",
+            }}
+          />
+          <RootLayout />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </Provider>
+    </KeyboardProvider>
   );
 }

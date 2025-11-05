@@ -5,10 +5,12 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronRight } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function OnBoardingScreen() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
@@ -31,7 +33,7 @@ export default function OnBoardingScreen() {
         </View>
       </View>
 
-      <View style={styles.contentContainer}>
+      <View style={[styles.contentContainer, { paddingBottom: bottom + 30 }]}>
         {/* Language Selection */}
         <Text style={styles.languageTitle}>
           {t("onboarding.selectLanguage")}
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
   },
   welcomeHeader: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: Platform.select({ ios: "700", android: "600" }),
     color: "#FFFFFF",
     marginBottom: 8,
     textAlign: "center",
@@ -164,11 +166,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     backgroundColor: "white",
-    height: "40%",
+    height: "50%",
     marginTop: "-40%",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    padding: 32,
+    paddingHorizontal: 32,
+    paddingTop: 32,
     justifyContent: "space-between",
   },
   languageSelector: {
