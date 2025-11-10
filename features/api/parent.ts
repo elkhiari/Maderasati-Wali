@@ -58,6 +58,7 @@ interface MobStudentDto {
   nfcCardID: string;
   nfcCardUID: string;
   nfcCardNumber: string;
+  paymentDetails: Payment[];
 }
 
 interface MobCircuitDto {
@@ -102,6 +103,20 @@ interface DocumentBase64Response {
   contentType: string;
   base64Content: string;
   fileSize: number;
+}
+
+export interface Payment {
+  id: string;
+  paymentCode: string;
+  externalReference: string;
+  monthAmount: number;
+  details: string | null;
+  isMandatory: boolean;
+  duetDate: string;
+  paymentDate: string;
+  agenceCode: string;
+  agentCode: string;
+  status: "PAID" | "INIT";
 }
 
 export const parentApi = apiSlice.injectEndpoints({

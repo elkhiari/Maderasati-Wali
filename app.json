@@ -1,17 +1,19 @@
 {
   "expo": {
-    "name": "Madrasati-Wali",
-    "slug": "Madrasati-Wali",
+    "name": "Maderasati Wali",
+    "slug": "Maderasati-Wali",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "madrasatiwali",
+    "scheme": "maderasatiwali",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maderasati.wali"
     },
     "android": {
+      "package": "com.maderasati.wali",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -39,110 +41,26 @@
           }
         }
       ],
-      "expo-localization",
-      "expo-font",
       [
-        "expo-font",
+        "onesignal-expo-plugin",
         {
-          "fonts": [
-            "./assets/fonts/Gucina-Bold.ttf",
-            "./assets/fonts/Gucina-Medium.ttf",
-            "./assets/fonts/Gucina-Regular.ttf",
-            "./assets/fonts/Gucina-SemiBold.ttf"
-          ],
-          "android": {
-            "fonts": [
-              {
-                "fontFamily": "Gucina",
-                "fontDefinitions": [
-                  {
-                    "path": "./assets/fonts/Gucina-Regular.ttf",
-                    "weight": 400
-                  },
-                  {
-                    "path": "./assets/fonts/Gucina-Medium.ttf",
-                    "weight": 500
-                  },
-                  {
-                    "path": "./assets/fonts/Gucina-SemiBold.ttf",
-                    "weight": 600
-                  },
-                  {
-                    "path": "./assets/fonts/Gucina-Bold.ttf",
-                    "weight": 700
-                  }
-                ]
-              },
-              {
-                "fontFamily": "Madani Arabic",
-                "fontDefinitions": [
-                  {
-                    "path": "./assets/fonts/Madani Arabic Thin.ttf",
-                    "weight": 100
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Extra Light.ttf",
-                    "weight": 200
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Light.ttf",
-                    "weight": 300
-                  },
-                  {
-                    "path": "./assets/fonts/Madani-Arabic-Medium.ttf",
-                    "weight": 400
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Medium.ttf",
-                    "weight": 500
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Semi Bold.ttf",
-                    "weight": 600
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Bold.ttf",
-                    "weight": 700
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Extra Bold.ttf",
-                    "weight": 800
-                  },
-                  {
-                    "path": "./assets/fonts/Madani Arabic Black.ttf",
-                    "weight": 900
-                  }
-                ]
-              }
-            ]
-          },
-          "ios": {
-            "fonts": [
-              "./assets/fonts/Gucina-Regular.ttf",
-              "./assets/fonts/Gucina-Medium.ttf",
-              "./assets/fonts/Gucina-SemiBold.ttf",
-              "./assets/fonts/Gucina-Bold.ttf",
-              "./assets/fonts/Madani Arabic Thin.ttf",
-              "./assets/fonts/Madani Arabic Extra Light.ttf",
-              "./assets/fonts/Madani Arabic Light.ttf",
-              "./assets/fonts/Madani Arabic Regular.ttf",
-              "./assets/fonts/Madani Arabic Medium.ttf",
-              "./assets/fonts/Madani Arabic Semi Bold.ttf",
-              "./assets/fonts/Madani Arabic Bold.ttf",
-              "./assets/fonts/Madani Arabic Extra Bold.ttf",
-              "./assets/fonts/Madani Arabic Black.ttf"
-            ]
-          }
+          "mode": "development"
         }
       ],
-      "expo-secure-store"
+      "expo-localization",
+      "expo-font",
+      "expo-secure-store",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
-      "supportsRTL": true
+      "supportsRTL": true,
+      "eas": {
+        "oneSignalAppId": "e4ac1cf5-fe45-467c-bc5d-14638c1fca68"
+      }
     }
   }
 }

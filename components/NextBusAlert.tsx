@@ -37,7 +37,7 @@ export default function NextBusAlertCompact({
       const arrival = new Date(arrivalTime);
       const diff = arrival.getTime() - now.getTime();
       const minutes = Math.floor(diff / 60000);
-      setTimeRemaining(minutes > 0 ? minutes : 0);
+      setTimeRemaining(minutes > 0 ? minutes : 20);
     };
 
     calculateTime();
@@ -81,7 +81,7 @@ export default function NextBusAlertCompact({
         style={[styles.headerSection, { backgroundColor: getAlertColor() }]}
       >
         <Image
-          source={require("@/assets/images/onBoarding.webp")}
+          source={require("@/assets/images/08.webp")}
           style={styles.bgImage}
         />
         <View style={styles.headerOverlay}>
@@ -141,28 +141,30 @@ export default function NextBusAlertCompact({
 
 const styles = StyleSheet.create({
   compactContainer: {
-    marginTop: 16,
+    marginTop: 4,
     borderRadius: 16,
-    overflow: "hidden",
     backgroundColor: "white",
     shadowColor: "#7A3588",
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 2,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
     elevation: 5,
   },
   headerSection: {
     position: "relative",
     overflow: "hidden",
+    borderRadius: 16,
   },
   bgImage: {
     position: "absolute",
     width: "100%",
     height: "100%",
     opacity: 0.2,
+    borderRadius: 16,
   },
   headerOverlay: {
     flexDirection: "row",

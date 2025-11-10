@@ -3,6 +3,12 @@
   "warn": "إنتبـــــــــــــاه",
   "error": "خطــــــــــــــأ",
   "success": "نجــــــــــــاح",
+  "cancel": "إلغـــــاء",
+  "info": "معلــــــــــــــومة",
+  "class": "الصف",
+  "circuit": "الدائرة",
+  "schoolYear": "السنة الدراسية",
+  "lastPayment": "آخر دفعة",
   "onboarding": {
     "selectLanguage": "اختر لغتـــــــــــك",
     "welcome": "مرحبًا بك في مدرســـــــــــــتي",
@@ -24,11 +30,20 @@
     "signUp": "إنشاء حساب",
     "fillAllFields": "يرجى ملء جميع الحقول",
     "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة",
-    "successMessage": "لقد قمت بتسجيل الدخول بنجاح، {{name}}!"
+    "successMessage": "لقد قمت بتسجيل الدخول بنجاح، {{name}}!",
+    "biometricPrompt": "المصادقة لتسجيل الدخول",
+    "usePassword": "استخدم كلمة المرور",
+    "useFaceId": "استخدم التعرف على الوجه",
+    "useFingerprint": "استخدم بصمة الإصبع",
+    "useIris": "استخدم بصمة العين",
+    "useBiometric": "استخدم المصادقة البيومترية",
+    "noSavedCredentials": "لم يتم العثور على بيانات اعتماد محفوظة",
+    "biometricFailed": "فشلت المصادقة",
+    "usePasswordInstead": "الرجاء إدخال كلمة المرور يدويًا"
   },
   "home": {
     "greeting": "مرحبـــــــــــا بعودتك",
-    "myChildren": "أطفالي",
+    "myChildren": "أطفــــــــــــــالي",
     "nextBusArriving": "الحافلـــــــــــة القادمة خلال",
     "minutes": "دقائــــــــق",
     "station": "المحطة",
@@ -65,6 +80,36 @@
     "busWaitingAtStation": "الحافلة تنتظر في المحطة",
     "delayed": "تأخر بمقدار",
     "studentsOnBoard": "طلاب على متن الحافلة",
-    "estimatedArrival": "الوصول المتوقع"
+    "estimatedArrival": "الوصول المتوقع",
+    "nextBus": "الحافلة القادمة",
+    "recentPayments": "المدفوعات الأخيرة",
+    "lastTwoPayments": "آخر معاملتين مدفوعتين"
+  },
+  "payments": {
+    "title": "الــــــــــمدفوعات",
+    "currency": "درهم",
+    "totalPaid": "إجمالي المدفــــــــــــــوع",
+    "totalLate": "المدفوعات الــــمتأخرة",
+    "nextPayment": "الدفعة الــــــــــــــــتالية",
+    "dueDate": "تاريخ الاستحقاق",
+    "paidOn": "تم الدفع في",
+    "payNow": "ادفــــــــــــــــــــع الآن",
+    "latePayments": "المدفوعات المتــــأخرة",
+    "upcomingPayments": "المدفوعات الــــــــقادمة",
+    "paymentHistory": "سجل الــــــــــمدفوعات",
+    "paid": "مــــــدفوع",
+    "late": "متأخر",
+    "pending": "قيد الانتظار"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "all": "الكل",
+    "unread": "غير مقروءة",
+    "noNotifications": "لا توجد إشعارات",
+    "noUnread": "لا توجد إشعارات غير مقروءة",
+    "justNow": "الآن",
+    "minutesAgo": "منذ {{count}} د",
+    "hoursAgo": "منذ {{count}} س",
+    "daysAgo": "منذ {{count}} ي"
   }
 }

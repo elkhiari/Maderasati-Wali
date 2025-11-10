@@ -21,15 +21,19 @@ export default function useAuth() {
   const token = useSelector(selectCurrentToken);
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   const getCredentials = async () => {
     const credentials = await SecureStore.getItemAsync("credentials", {
       keychainService: "madrasati-wali-credentials",
     });
     return credentials ? JSON.parse(credentials) : null;
+  };
+
+  const handleLogout = async () => {
+    dispatch(logout());
+    await SecureStore.deleteItemAsync("credentials", {
+      keychainService: "madrasati-wali-credentials",
+    });
+    router.replace("/(auth)/login");
   };
 
   const handleIsAuthenticated = async (

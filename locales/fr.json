@@ -3,6 +3,12 @@
   "warn": "Attention",
   "error": "Erreur",
   "success": "Succès",
+  "cancel": "Annuler",
+  "info": "Information",
+  "class": "Classe",
+  "circuit": "Circuit",
+  "schoolYear": "Année scolaire",
+  "lastPayment": "Dernier paiement",
   "onboarding": {
     "selectLanguage": "Choisissez votre langue",
     "welcome": "Bienvenue à MADERASATI",
@@ -24,10 +30,18 @@
     "signUp": "S'inscrire",
     "fillAllFields": "Veuillez remplir tous les champs",
     "invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect",
-    "successMessage": "Vous vous êtes connecté avec succès, {name}!"
+    "successMessage": "Vous vous êtes connecté avec succès, {name}!",
+    "biometricPrompt": "Authentifiez-vous pour vous connecter",
+    "usePassword": "Utiliser le mot de passe",
+    "useFaceId": "Utiliser Face ID",
+    "useFingerprint": "Utiliser l'empreinte digitale",
+    "useIris": "Utiliser l'iris",
+    "useBiometric": "Utiliser l'authentification biométrique",
+    "noSavedCredentials": "Aucun identifiant enregistré trouvé",
+    "biometricFailed": "L'authentification a échoué",
+    "usePasswordInstead": "Veuillez entrer votre mot de passe manuellement"
   },
   "home": {
-    "greeting": "Bienvenue,",
     "greeting": "Bienvenue,",
     "myChildren": "Mes Enfants",
     "nextBusArriving": "Prochain Bus Dans",
@@ -66,6 +80,36 @@
     "busWaitingAtStation": "Bus en Attente à la Station",
     "delayed": "Retardé de",
     "studentsOnBoard": "Étudiants à Bord",
-    "estimatedArrival": "Arrivée Estimée"
+    "estimatedArrival": "Arrivée Estimée",
+    "nextBus": "Prochain Bus",
+    "recentPayments": "Paiements Récents",
+    "lastTwoPayments": "2 dernières transactions payées"
+  },
+  "payments": {
+    "title": "Paiements",
+    "currency": "MAD",
+    "totalPaid": "Total Payé",
+    "totalLate": "Paiements en Retard",
+    "nextPayment": "Prochain Paiement",
+    "dueDate": "Date limite",
+    "paidOn": "Payé le",
+    "payNow": "Payer Maintenant",
+    "latePayments": "Paiements en Retard",
+    "upcomingPayments": "Paiements à Venir",
+    "paymentHistory": "Historique des Paiements",
+    "paid": "Payé",
+    "late": "En retard",
+    "pending": "En attente"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "all": "Toutes",
+    "unread": "Non lues",
+    "noNotifications": "Aucune notification",
+    "noUnread": "Aucune notification non lue",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {{count}}m",
+    "hoursAgo": "Il y a {{count}}h",
+    "daysAgo": "Il y a {{count}}j"
   }
 }

@@ -3,10 +3,19 @@ import { useMobileLoginMutation } from "@/features/api/auth";
 import useAuth from "@/hooks/useAuth";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
-import { CircleAlert, Eye, EyeOff, Lock, User } from "lucide-react-native";
-import { useState } from "react";
+import {
+  CircleAlert,
+  Eye,
+  EyeOff,
+  Fingerprint,
+  Lock,
+  ScanFace,
+  User,
+} from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import * as LocalAuthentication from "expo-local-authentication";
 import {
   ActivityIndicator,
   Platform,
@@ -19,16 +28,163 @@ import {
 import { showMessage } from "react-native-flash-message";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
+type BiometricType = "face" | "fingerprint" | "iris" | null;
+
 export default function Login() {
   const [login, { isLoading }] = useMobileLoginMutation();
-  const { handleIsAuthenticated, hasOnboarded, getCredentials, user } =
-    useAuth();
+  const { handleIsAuthenticated, hasOnboarded, getCredentials } = useAuth();
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [biometricType, setBiometricType] = useState<BiometricType>(null);
+  const [isBiometricAvailable, setIsBiometricAvailable] = useState(false);
+  const [usePasswordMode, setUsePasswordMode] = useState(false);
+
+  useEffect(() => {
+    checkBiometricAvailability();
+    if (hasOnboarded) {
+      loadSavedCredentials();
+    }
+  }, [hasOnboarded]);
+
+  const checkBiometricAvailability = async () => {
+    try {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+
+      if (compatible && enrolled) {
+        const types =
+          await LocalAuthentication.supportedAuthenticationTypesAsync();
+        setIsBiometricAvailable(true);
+
+        // Determine biometric type
+        if (
+          types.includes(
+            LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+          )
+        ) {
+          setBiometricType("face");
+        } else if (
+          types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)
+        ) {
+          setBiometricType("fingerprint");
+        } else if (
+          types.includes(LocalAuthentication.AuthenticationType.IRIS)
+        ) {
+          setBiometricType("iris");
+        }
+      }
+    } catch (error) {
+      console.error("Biometric check error:", error);
+    }
+  };
+
+  const loadSavedCredentials = async () => {
+    try {
+      const credentials = await getCredentials();
+      if (credentials?.username) {
+        setUsername(credentials.username);
+      }
+    } catch (error) {
+      console.error("Error loading credentials:", error);
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t("login.biometricPrompt"),
+        fallbackLabel: t("login.usePassword"),
+        cancelLabel: t("cancel"),
+      });
+
+      if (result.success) {
+        const credentials = await getCredentials();
+
+        if (credentials?.username && credentials?.password) {
+          try {
+            const response = await login({
+              username: credentials.username,
+              password: credentials.password,
+            }).unwrap();
+            handleIsAuthenticated(response, credentials);
+          } catch (error) {
+            showMessage({
+              message: t("error"),
+              description: t("login.invalidCredentials"),
+              type: "danger",
+              icon: () => (
+                <CircleAlert
+                  color="white"
+                  size={30}
+                  stroke={"white"}
+                  strokeWidth={3}
+                />
+              ),
+            });
+          }
+        } else {
+          showMessage({
+            message: t("error"),
+            description: t("login.noSavedCredentials"),
+            type: "danger",
+            icon: () => (
+              <CircleAlert
+                color="white"
+                size={30}
+                stroke={"white"}
+                strokeWidth={3}
+              />
+            ),
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Biometric authentication error:", error);
+      showMessage({
+        message: t("error"),
+        description: t("login.biometricFailed"),
+        type: "danger",
+        icon: () => (
+          <CircleAlert
+            color="white"
+            size={30}
+            stroke={"white"}
+            strokeWidth={3}
+          />
+        ),
+      });
+    }
+  };
+
+  const getBiometricIcon = () => {
+    switch (biometricType) {
+      case "face":
+        return <ScanFace color="white" size={24} />;
+      case "fingerprint":
+        return <Fingerprint size={24} color="white" />;
+      case "iris":
+        return "👁️";
+      default:
+        return <Fingerprint size={24} color="white" />;
+    }
+  };
+
+  const getBiometricLabel = () => {
+    switch (biometricType) {
+      case "face":
+        return t("login.useFaceId");
+      case "fingerprint":
+        return t("login.useFingerprint");
+      case "iris":
+        return t("login.useIris");
+      default:
+        return t("login.useBiometric");
+    }
+  };
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -114,60 +270,111 @@ export default function Login() {
                   value={username}
                   onChangeText={setUsername}
                   autoCapitalize="none"
-                  editable={!isLoading}
+                  editable={!isLoading && (!hasOnboarded || usePasswordMode)}
                 />
               </View>
             </View>
 
-            {/* Password Input */}
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Lock size={20} color="#7A3588" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder={t("login.password")}
-                  placeholderTextColor="#95a5a6"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  editable={!isLoading}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} color="#95a5a6" />
-                  ) : (
-                    <Eye size={20} color="#95a5a6" />
-                  )}
-                </TouchableOpacity>
+            {/* Password Input - Show if not onboarded OR user wants to use password mode */}
+            {(!hasOnboarded || usePasswordMode) && (
+              <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                  <Lock size={20} color="#7A3588" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder={t("login.password")}
+                    placeholderTextColor="#95a5a6"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    autoCapitalize="none"
+                    editable={!isLoading}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.eyeIcon}
+                  >
+                    {showPassword ? (
+                      <EyeOff size={20} color="#95a5a6" />
+                    ) : (
+                      <Eye size={20} color="#95a5a6" />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
 
             {/* Forgot Password */}
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>
-                {t("login.forgotPassword")}
-              </Text>
-            </TouchableOpacity>
+            {(!hasOnboarded || usePasswordMode) && (
+              <TouchableOpacity style={styles.forgotPassword}>
+                <Text style={styles.forgotPasswordText}>
+                  {t("login.forgotPassword")}
+                </Text>
+              </TouchableOpacity>
+            )}
 
-            {/* Login Button */}
-            <TouchableOpacity
-              style={[
-                styles.loginButton,
-                isLoading && styles.loginButtonDisabled,
-              ]}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text style={styles.loginButtonText}>{t("login.signIn")}</Text>
-              )}
-            </TouchableOpacity>
+            {/* Biometric Login Button - Show if user has onboarded and not in password mode */}
+            {hasOnboarded && isBiometricAvailable && !usePasswordMode && (
+              <TouchableOpacity
+                style={[
+                  styles.biometricButton,
+                  isLoading && styles.loginButtonDisabled,
+                ]}
+                onPress={handleBiometricLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <View style={styles.biometricButtonContent}>
+                    {typeof getBiometricIcon() === "string" ? (
+                      <Text style={styles.biometricEmoji}>
+                        {getBiometricIcon()}
+                      </Text>
+                    ) : (
+                      getBiometricIcon()
+                    )}
+                    <Text style={styles.biometricButtonText}>
+                      {getBiometricLabel()}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            )}
+
+            {/* Regular Login Button - Show if not onboarded OR in password mode */}
+            {(!hasOnboarded || usePasswordMode) && (
+              <TouchableOpacity
+                style={[
+                  styles.loginButton,
+                  isLoading && styles.loginButtonDisabled,
+                ]}
+                onPress={handleLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.loginButtonText}>
+                    {t("login.signIn")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
+
+            {/* Toggle between biometric and password for onboarded users */}
+            {hasOnboarded && isBiometricAvailable && (
+              <TouchableOpacity
+                style={styles.alternativeLoginButton}
+                onPress={() => setUsePasswordMode(!usePasswordMode)}
+              >
+                <Text style={styles.alternativeLoginText}>
+                  {usePasswordMode
+                    ? getBiometricLabel()
+                    : t("login.usePassword")}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.versionContainer}>
             <Text style={styles.versionText}>
@@ -300,12 +507,50 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 20,
   },
+  biometricButton: {
+    backgroundColor: "#7A3588",
+    paddingVertical: 16,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginBottom: 16,
+  },
+  biometricButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  biometricEmoji: {
+    fontSize: 24,
+  },
+  biometricButtonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "600",
+  },
   loginButtonDisabled: {
     opacity: 0.6,
   },
   loginButtonText: {
     fontSize: 18,
     color: "white",
+    fontWeight: "600",
+  },
+  alternativeLoginButton: {
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  alternativeLoginText: {
+    color: "#7A3588",
+    fontSize: 14,
     fontWeight: "600",
   },
   versionContainer: {

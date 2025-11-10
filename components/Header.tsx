@@ -38,7 +38,8 @@ export default function HomeHeader({
   const insets = useSafeAreaInsets();
 
   // Calculate top padding
-  const topPadding = insets.top + 10;
+  const topPadding =
+    insets.top + (Platform.select({ ios: -10, android: 10 }) || 0);
 
   // Animate header translation
   const headerTranslateY = scrollY.interpolate({
@@ -108,7 +109,7 @@ export default function HomeHeader({
       >
         <View style={styles.header}>
           <Image
-            source={require("@/assets/images/onBoarding.webp")}
+            source={require("@/assets/images/team.webp")}
             style={styles.image}
           />
 

@@ -9,8 +9,10 @@ import { StatusBar } from "expo-status-bar";
 import FlashMessage from "react-native-flash-message";
 import "react-native-reanimated";
 
+import { initOneSignal } from "@/config/onesignal";
 import store from "@/features/store";
 import useAuth from "@/hooks/useAuth";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -31,6 +33,7 @@ function RootLayout() {
           name="modal"
           options={{ presentation: "modal", title: "Modal" }}
         />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
     </Stack>
@@ -40,21 +43,32 @@ function RootLayout() {
 export default function RootLayoutWrapper() {
   const { i18n } = useTranslation();
   const locale = i18n.language;
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     "Gucina-Regular": require("@/assets/fonts/Gucina-Regular.ttf"),
     "Gucina-Medium": require("@/assets/fonts/Gucina-Medium.ttf"),
     "Gucina-SemiBold": require("@/assets/fonts/Gucina-SemiBold.ttf"),
     "Gucina-Bold": require("@/assets/fonts/Gucina-Bold.ttf"),
-    "MadaniArabic-Thin": require("@/assets/fonts/Madani Arabic Thin.ttf"),
-    "MadaniArabic-ExtraLight": require("@/assets/fonts/Madani Arabic Extra Light.ttf"),
-    "MadaniArabic-Light": require("@/assets/fonts/Madani Arabic Light.ttf"),
-    "MadaniArabic-Regular": require("@/assets/fonts/Madani Arabic Regular.ttf"),
-    "MadaniArabic-Medium": require("@/assets/fonts/Madani Arabic Medium.ttf"),
-    "MadaniArabic-SemiBold": require("@/assets/fonts/Madani Arabic Semi Bold.ttf"),
-    "MadaniArabic-Bold": require("@/assets/fonts/Madani Arabic Bold.ttf"),
-    "MadaniArabic-ExtraBold": require("@/assets/fonts/Madani Arabic Extra Bold.ttf"),
-    "MadaniArabic-Black": require("@/assets/fonts/Madani Arabic Black.ttf"),
+    "MadaniArabic-Thin": require("@/assets/fonts/Madani-Arabic-Thin.ttf"),
+    "MadaniArabic-ExtraLight": require("@/assets/fonts/Madani-Arabic-Extra-Light.ttf"),
+    "MadaniArabic-Light": require("@/assets/fonts/Madani-Arabic-Light.ttf"),
+    "MadaniArabic-Regular": require("@/assets/fonts/Madani-Arabic-Regular.ttf"),
+    "MadaniArabic-Medium": require("@/assets/fonts/Madani-Arabic-Medium.ttf"),
+    "MadaniArabic-SemiBold": require("@/assets/fonts/Madani-Arabic-Semi-Bold.ttf"),
+    "MadaniArabic-Bold": require("@/assets/fonts/Madani-Arabic-Bold.ttf"),
+    "MadaniArabic-ExtraBold": require("@/assets/fonts/Madani-Arabic-Extra-Bold.ttf"),
+    "MadaniArabic-Black": require("@/assets/fonts/Madani-Arabic-Black.ttf"),
   });
+
+  useEffect(() => {
+    initOneSignal();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fonts loaded:", loaded);
+    if (error) {
+      console.error("Font loading error:", error);
+    }
+  }, [loaded, error]);
 
   const colorScheme = useColorScheme();
   return (
